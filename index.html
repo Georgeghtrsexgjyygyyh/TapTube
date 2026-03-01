@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapTube — смотри и загружай</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f9f9f9;
+            color: #0f0f0f;
+            transition: 0.2s;
+        }
+
+        body.dark {
+            background: #0f0f0f;
+            color: #efefef;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        body.dark .header {
+            background: #202020;
+            border-bottom-color: #383838;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ff0055;
+            cursor: pointer;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .search-container {
+            flex: 0 1 600px;
+            margin: 0 20px;
+        }
+
+        .search-container form {
+            display: flex;
+        }
+
+        .search-container input {
+            flex: 1;
+            height: 44px;
+            padding: 0 20px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 40px 0 0 40px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        body.dark .search-container input {
+            background: #121212;
+            border-color: #383838;
+            color: #f1f1f1;
+        }
+
+        .search-container button {
+            width: 70px;
+            height: 44px;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-radius: 0 40px 40px 0;
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+
+        body.dark .search-container button {
+            background: #313131;
+            border-color: #383838;
+            color: #f1f1f1;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .upload-btn {
+            background: #ff0055;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff5500, #ff0055);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255,0,85,0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 8px 24px;
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        body.dark .nav-tabs {
+            background: #202020;
+            border-bottom-color: #383838;
+        }
+
+        .nav-tab {
+            padding: 8px 20px;
+            border-radius: 32px;
+            background: #f0f0f0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        body.dark .nav-tab {
+            background: #313131;
+            color: #efefef;
+        }
+
+        .nav-tab.active {
+            background: #0f0f0f;
+            color: white;
+        }
+
+        body.dark .nav-tab.active {
+            background: #efefef;
+            color: #0f0f0f;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .page.hidden {
+            display: none;
+        }
+
+        /* Сетка видео */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .video-card {
+            cursor: pointer;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+
+        body.dark .video-card {
+            background: #1a1a1a;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .thumbnail {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #ccc;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .video-info {
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .channel-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .video-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .video-details p {
+            font-size: 0.85rem;
+            color: #606060;
+        }
+
+        body.dark .video-details p {
+            color: #aaa;
+        }
+
+        /* Страница просмотра */
+        .watch-container {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .watch-player {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .watch-player video {
+            width: 100%;
+            border-radius: 20px;
+            background: black;
+            max-height: 540px;
+        }
+
+        .watch-side {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .video-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        .video-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .like-bar {
+            display: flex;
+            gap: 24px;
+        }
+
+        .like-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .like-item i {
+            font-size: 1.4rem;
+        }
+
+        .like-item.liked i {
+            color: #3ea6ff;
+        }
+
+        .channel-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+        }
+
+        .channel-avatar-large {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0055, #ffaa00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .sub-btn {
+            background: #cc0000;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sub-btn.subscribed {
+            background: #606060;
+        }
+
+        .description-box {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 20px;
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+
+        body.dark .description-box {
+            background: #222;
+        }
+
+        /* Комментарии */
+        .comments-section {
+            margin-top: 32px;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .comment-input-area input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            padding: 10px 0;
+            font-size: 1rem;
+            outline: none;
+            color: inherit;
+        }
+
+        .comment {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .comment-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #9c27b0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+        }
+
+        .comment-date {
+            font-size: 0.75rem;
+            color: #606060;
+            margin-top: 6px;
+        }
+
+        /* Страница канала */
+        .channel-banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #ff0055, #ffaa00);
+            border-radius: 24px;
+            margin-bottom: 20px;
+        }
+
+        .channel-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .channel-stats {
+            color: #606060;
+            font-size: 0.95rem;
+        }
+
+        /* Модалки */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 40px;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        body.dark .modal-content {
+            background: #1e1e1e;
+            color: #efefef;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 24px;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 40px;
+            font-size: 1rem;
+            background: #f9f9f9;
+        }
+
+        body.dark .modal-content input,
+        body.dark .modal-content textarea {
+            background: #2a2a2a;
+            border-color: #444;
+            color: white;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 40px;
+            background: #ff0055;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border-color: #e0e0e0;
+        }
+
+        body.dark hr {
+            border-color: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo" id="logoHome">
+            <i class="fab fa-youtube"></i>
+            <span>TapTube</span>
+        </div>
+        <div class="search-container">
+            <form id="searchForm">
+                <input type="text" placeholder="Поиск видео" id="searchInput">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <div class="header-icons">
+            <button class="upload-btn" id="uploadBtn"><i class="fas fa-plus"></i> Загрузить</button>
+            <i class="fas fa-bell"></i>
+            <div class="avatar" id="avatarBtn">T</div>
+        </div>
+    </header>
+
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="home">Главная</div>
+        <div class="nav-tab" data-tab="subscriptions">Подписки</div>
+        <div class="nav-tab" data-tab="library">Библиотека</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Главная -->
+        <div id="homePage" class="page">
+            <div class="video-grid" id="homeGrid"></div>
+        </div>
+
+        <!-- Подписки -->
+        <div id="subscriptionsPage" class="page hidden">
+            <h2>Видео от подписок</h2>
+            <div class="video-grid" id="subscriptionsGrid"></div>
+        </div>
+
+        <!-- Библиотека -->
+        <div id="libraryPage" class="page hidden">
+            <h2>Библиотека</h2>
+            <p>Здесь будут ваши лайки и плейлисты.</p>
+        </div>
+
+        <!-- Страница просмотра видео -->
+        <div id="watchPage" class="page hidden">
+            <div class="watch-container">
+                <div class="watch-player">
+                    <video id="watchVideo" controls></video>
+                    <h1 class="video-title" id="watchTitle"></h1>
+                    <div class="video-actions">
+                        <span id="watchViews"></span>
+                        <div class="like-bar">
+                            <div class="like-item" id="likeBtn"><i class="far fa-thumbs-up"></i> <span id="likeCount">0</span></div>
+                            <div class="like-item" id="dislikeBtn"><i class="far fa-thumbs-down"></i> <span id="dislikeCount">0</span></div>
+                        </div>
+                    </div>
+                    <div class="channel-section">
+                        <div class="channel-info" id="channelInfo">
+                            <div class="channel-avatar-large" id="channelAvatar">S</div>
+                            <div>
+                                <h3 id="channelName">SasGShitRoliki</h3>
+                                <p id="channelSubs">0 подписчиков</p>
+                            </div>
+                        </div>
+                        <button class="sub-btn" id="subBtn">Подписаться</button>
+                    </div>
+                    <div class="description-box" id="watchDescription"></div>
+
+                    <div class="comments-section">
+                        <h3>Комментарии <span id="commentsCount">0</span></h3>
+                        <div class="comment-input-area">
+                            <div class="comment-avatar" id="currentUserCommentAvatar">T</div>
+                            <input type="text" id="commentInput" placeholder="Оставить комментарий...">
+                            <button id="sendComment" style="border-radius:40px; padding:0 20px; background:#ff0055; color:white; border:none;">Отправить</button>
+                        </div>
+                        <div id="commentsList"></div>
+                    </div>
+                </div>
+                <div class="watch-side">
+                    <h3>Рекомендации</h3>
+                    <div id="recommendationsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница канала -->
+        <div id="channelPage" class="page hidden">
+            <div class="channel-banner"></div>
+            <div class="channel-header">
+                <div class="channel-avatar-large" id="channelPageAvatar">T</div>
+                <div>
+                    <h1 id="channelPageName">Название канала</h1>
+                    <p class="channel-stats" id="channelPageStats">подписчиков: 0 • видео: 0</p>
+                    <button class="sub-btn" id="channelPageSubBtn">Подписаться</button>
+                </div>
+            </div>
+            <h3>Видео канала</h3>
+            <div class="video-grid" id="channelVideosGrid"></div>
+        </div>
+    </div>
+
+    <!-- Модалка входа -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAuthModal">&times;</span>
+            <h2>Вход в TapTube</h2>
+            <input type="text" placeholder="Имя пользователя" id="loginName">
+            <input type="password" placeholder="Пароль (любой)" id="loginPassword">
+            <button id="loginBtn">Войти</button>
+            <p style="text-align:center; margin:16px 0;">или</p>
+            <button id="registerBtn" style="background:#2a2a2a;">Создать аккаунт</button>
+        </div>
+    </div>
+
+    <!-- Модалка загрузки -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeUploadModal">&times;</span>
+            <h2>Загрузить видео</h2>
+            <input type="text" id="videoTitleInput" placeholder="Название видео">
+            <textarea id="videoDescInput" placeholder="Описание" rows="3"></textarea>
+            <input type="text" id="videoSrcInput" placeholder="Ссылка на видео (mp4)">
+            <input type="text" id="videoPreviewInput" placeholder="Ссылка на превью (jpg/png)">
+            <button id="publishVideoBtn">Опубликовать</button>
+            <p style="font-size:0.8rem; color:#888;">Пример ссылки: https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- РАБОЧИЕ ВИДЕО С ПУБЛИЧНОГО ИСТОЧНИКА ----------
+            const defaultVideos = [
+                {
+                    id: 1,
+                    title: 'Big Buck Bunny (официальный тест)',
+                    channel: 'TapTube Originals',
+                    views: 1500000,
+                    date: '2025-01-15',
+                    duration: '9:56',
+                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
+                    description: 'Классический короткометражный фильм про кролика.',
+                    likes: 34500,
+                    dislikes: 1200,
+                    comments: [
+                        { author: 'Аниман', text: 'Обожаю эту работу!', date: '2025-02-01' }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'Elephant\'s Dream',
+                    channel: 'TapTube Originals',
+                    views: 890000,
+                    date: '2025-02-10',
+                    duration: '10:53',
+                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
+                    description: 'Первый открытый фильм проекта Blender.',
+                    likes: 18700,
+                    dislikes: 340,
+                    comments: []
+                },
+                {
+                    id: 3,
+                    title: 'Sintel',
+                    channel: 'TapTube Originals',
+                    views: 2200000,
+                    date: '2025-01-28',
+                    duration: '14:48',
+                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg',
+                    description: 'Драматическая история девушки и дракона.',
+                    likes: 41200,
+                    dislikes: 890,
+                    comments: []
+                },
+                {
+                    id: 4,
+                    title: 'Tears of Steel',
+                    channel: 'TapTube Originals',
+                    views: 1100000,
+                    date: '2025-02-05',
+                    duration: '12:14',
+                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg',
+                    description: 'Научно-фантастический короткометражный фильм.',
+                    likes: 28900,
+                    dislikes: 560,
+                    comments: []
+                }
+            ];
+
+            // Ключи localStorage
+            const STORAGE_KEYS = {
+                VIDEOS: 'tapTubeVideos',
+                USERS: 'tapTubeUsers',
+                CURRENT_USER: 'tapTubeCurrentUser'
+            };
+
+            // Загружаем данные из localStorage или используем default
+            let videos = JSON.parse(localStorage.getItem(STORAGE_KEYS.VIDEOS)) || defaultVideos;
+            let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || {};
+            let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
+
+            // Сохранение
+            function saveVideos() {
+                localStorage.setItem(STORAGE_KEYS.VIDEOS, JSON.stringify(videos));
+            }
+            function saveUsers() {
+                localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+            }
+            function saveCurrentUser() {
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+            }
+
+            // Создать пользователя, если не существует
+            function ensureUser(username) {
+                if (!users[username]) {
+                    users[username] = {
+                        name: username,
+                        subscriptions: [],
+                        likedVideos: [],
+                        dislikedVideos: [],
+                        uploads: []
+                    };
+                    saveUsers();
+                }
+                return users[username];
+            }
+            if (currentUser) ensureUser(currentUser.name);
+
+            // Форматирование просмотров
+            function formatViews(num) {
+                if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + ' млн';
+                if (num >= 1_000) return (num / 1_000).toFixed(1) + ' тыс';
+                return num.toString();
+            }
+
+            // ---------- DOM ЭЛЕМЕНТЫ ----------
+            const homePage = document.getElementById('homePage');
+            const subsPage = document.getElementById('subscriptionsPage');
+            const libraryPage = document.getElementById('libraryPage');
+            const watchPage = document.getElementById('watchPage');
+            const channelPage = document.getElementById('channelPage');
+
+            const homeGrid = document.getElementById('homeGrid');
+            const subsGrid = document.getElementById('subscriptionsGrid');
+            const watchVideo = document.getElementById('watchVideo');
+            const watchTitle = document.getElementById('watchTitle');
+            const watchViews = document.getElementById('watchViews');
+            const watchDescription = document.getElementById('watchDescription');
+            const likeCount = document.getElementById('likeCount');
+            const dislikeCount = document.getElementById('dislikeCount');
+            const likeBtn = document.getElementById('likeBtn');
+            const dislikeBtn = document.getElementById('dislikeBtn');
+            const subBtn = document.getElementById('subBtn');
+            const channelNameSpan = document.getElementById('channelName');
+            const channelSubs = document.getElementById('channelSubs');
+            const channelAvatar = document.getElementById('channelAvatar');
+            const channelInfoDiv = document.getElementById('channelInfo');
+            const commentsCount = document.getElementById('commentsCount');
+            const commentsList = document.getElementById('commentsList');
+            const recommendationsDiv = document.getElementById('recommendationsList');
+            const commentInput = document.getElementById('commentInput');
+            const sendComment = document.getElementById('sendComment');
+            const avatarBtn = document.getElementById('avatarBtn');
+            const currentUserCommentAvatar = document.getElementById('currentUserCommentAvatar');
+            const authModal = document.getElementById('authModal');
+            const closeAuthModal = document.getElementById('closeAuthModal');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const loginName = document.getElementById('loginName');
+            const uploadModal = document.getElementById('uploadModal');
+            const closeUploadModal = document.getElementById('closeUploadModal');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const publishVideoBtn = document.getElementById('publishVideoBtn');
+            const videoTitleInput = document.getElementById('videoTitleInput');
+            const videoDescInput = document.getElementById('videoDescInput');
+            const videoSrcInput = document.getElementById('videoSrcInput');
+            const videoPreviewInput = document.getElementById('videoPreviewInput');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const logoHome = document.getElementById('logoHome');
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = document.getElementById('searchInput');
+
+            // Элементы страницы канала
+            const channelPageAvatar = document.getElementById('channelPageAvatar');
+            const channelPageName = document.getElementById('channelPageName');
+            const channelPageStats = document.getElementById('channelPageStats');
+            const channelPageSubBtn = document.getElementById('channelPageSubBtn');
+            const channelVideosGrid = document.getElementById('channelVideosGrid');
+
+            // Состояние
+            let currentVideo = null;
+            let currentChannelName = null;
+
+            // ---------- ФУНКЦИИ ОТОБРАЖЕНИЯ ----------
+            function showPage(pageId) {
+                [homePage, subsPage, libraryPage, watchPage, channelPage].forEach(p => p.classList.add('hidden'));
+                document.getElementById(pageId).classList.remove('hidden');
+                // Активный таб (грубо)
+                navTabs.forEach(t => t.classList.remove('active'));
+                if (pageId === 'homePage') document.querySelector('[data-tab="home"]').classList.add('active');
+                else if (pageId === 'subscriptionsPage') document.querySelector('[data-tab="subscriptions"]').classList.add('active');
+                else if (pageId === 'libraryPage') document.querySelector('[data-tab="library"]').classList.add('active');
+            }
+
+            // Рендер главной
+            function renderHomeGrid(filter = '') {
+                const filtered = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
+                let html = '';
+                filtered.forEach(v => {
+                    html += `
+                        <div class="video-card" data-id="${v.id}">
+                            <div class="thumbnail">
+                                <img src="${v.preview}" alt="${v.title}" onerror="this.src='https://via.placeholder.com/280x158?text=TapTube'">
+                                <span class="duration">${v.duration}</span>
+                            </div>
+                            <div class="video-info">
+                                <div class="channel-avatar-small" data-channel="${v.channel}">${v.channel[0]}</div>
+                                <div class="video-details">
+                                    <h4>${v.title}</h4>
+                                    <p class="channel-name" data-channel="${v.channel}">${v.channel}</p>
+                                    <p>${formatViews(v.views)} • ${v.date}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                homeGrid.innerHTML = html;
+
+                // Обработчики
+                document.querySelectorAll('#homeGrid .video-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.channel-avatar-small') || e.target.closest('.channel-name')) {
+                            const channel = e.target.closest('[data-channel]')?.dataset.channel;
+                            if (channel) openChannelPage(channel);
+                        } else {
+                            const id = parseInt(card.dataset.id);
+                            openVideo(id);
+                        }
+                    });
+                });
+            }
+
+            // Открыть видео
+            function openVideo(id) {
+                const video = videos.find(v => v.id === id);
+                if (!video) return;
+                currentVideo = video;
+                showPage('watchPage');
+
+                watchVideo.src = video.src;
+                watchVideo.load(); // на случай, если уже было другое видео
+                watchVideo.onerror = () => {
+                    alert('Не удалось загрузить видео. Проверьте ссылку.');
+                };
+                watchTitle.innerText = video.title;
+                watchViews.innerText = `${formatViews(video.views)} просмотров • ${video.date}`;
+                watchDescription.innerText = video.description;
+                likeCount.innerText = video.likes;
+                dislikeCount.innerText = video.dislikes;
+                channelNameSpan.innerText = video.channel;
+                channelAvatar.innerText = video.channel[0].toUpperCase();
+                // Количество подписчиков канала
+                const subsCount = users[video.channel] ? users[video.channel].subscriptions.length : 0;
+                channelSubs.innerText = subsCount + ' подписчиков';
+
+                // Статус подписки
+                updateSubButton(video.channel);
+
+                // Статус лайка
+                resetLikeDislikeButtons();
+                if (currentUser) {
+                    const user = users[currentUser.name];
+                    if (user.likedVideos.includes(video.id)) {
+                        likeBtn.classList.add('liked');
+                    }
+                    if (user.dislikedVideos.includes(video.id)) {
+                        dislikeBtn.classList.add('liked');
+                    }
+                }
+
+                renderComments(video.comments);
+                renderRecommendations(video.id);
+            }
+
+            function resetLikeDislikeButtons() {
+                likeBtn.classList.remove('liked');
+                dislikeBtn.classList.remove('liked');
+            }
+
+            function updateSubButton(channelName) {
+                if (currentUser && users[currentUser.name].subscriptions.includes(channelName)) {
+                    subBtn.innerText = 'Вы подписаны';
+                    subBtn.classList.add('subscribed');
+                } else {
+                    subBtn.innerText = 'Подписаться';
+                    subBtn.classList.remove('subscribed');
+                }
+            }
+
+            function renderComments(comments) {
+                commentsCount.innerText = comments.length;
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p>Нет комментариев. Будьте первым!</p>';
+                    return;
+                }
+                let html = '';
+                comments.forEach(c => {
+                    html += `
+                        <div class="comment">
+                            <div class="comment-avatar">${c.author[0]}</div>
+                            <div class="comment-content">
+                                <div class="comment-author">${c.author}</div>
+                                <div>${c.text}</div>
+                                <div class="comment-date">${c.date}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                commentsList.innerHTML = html;
+            }
+
+            function renderRecommendations(excludeId) {
+                const others = videos.filter(v => v.id !== excludeId).slice(0, 5);
+                let html = '';
+                others.forEach(v => {
+                    html += `
+                        <div class="video-card" data-id="${v.id}" style="margin-bottom:12px;">
+                            <div class="thumbnail">
+                                <img src="${v.preview}" onerror="this.src='https://via.placeholder.com/280x158?text=TapTube'">
+                                <span class="duration">${v.duration}</span>
+                            </div>
+                            <div class="video-info">
+                                <div class="video-details">
+                                    <h4>${v.title}</h4>
+                                    <p>${v.channel}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                recommendationsDiv.innerHTML = html;
+                document.querySelectorAll('#recommendationsList .video-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const id = parseInt(card.dataset.id);
+                        openVideo(id);
+                    });
+                });
+            }
+
+            // Страница канала
+            function openChannelPage(channelName) {
+                currentChannelName = channelName;
+                showPage('channelPage');
+                channelPageName.innerText = channelName;
+                channelPageAvatar.innerText = channelName[0].toUpperCase();
+                const user = users[channelName] || { subscriptions: [], uploads: [] };
+                const channelVideos = videos.filter(v => v.channel === channelName);
+                channelPageStats.innerText = `подписчиков: ${user.subscriptions.length} • видео: ${channelVideos.length}`;
+
+                // Кнопка подписки на странице канала
+                if (currentUser && users[currentUser.name].subscriptions.includes(channelName)) {
+                    channelPageSubBtn.innerText = 'Вы подписаны';
+                    channelPageSubBtn.classList.add('subscribed');
+                } else {
+                    channelPageSubBtn.innerText = 'Подписаться';
+                    channelPageSubBtn.classList.remove('subscribed');
+                }
+
+                let html = '';
+                channelVideos.forEach(v => {
+                    html += `
+                        <div class="video-card" data-id="${v.id}">
+                            <div class="thumbnail">
+                                <img src="${v.preview}" onerror="this.src='https://via.placeholder.com/280x158?text=TapTube'">
+                                <span class="duration">${v.duration}</span>
+                            </div>
+                            <div class="video-info">
+                                <div class="video-details">
+                                    <h4>${v.title}</h4>
+                                    <p>${formatViews(v.views)} • ${v.date}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                channelVideosGrid.innerHTML = html;
+                document.querySelectorAll('#channelVideosGrid .video-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const id = parseInt(card.dataset.id);
+                        openVideo(id);
+                    });
+                });
+            }
+
+            // ---------- ОБРАБОТЧИКИ ----------
+            likeBtn.addEventListener('click', () => {
+                if (!currentUser) { alert('Войдите, чтобы оценивать'); authModal.classList.add('active'); return; }
+                if (!currentVideo) return;
+                const user = users[currentUser.name];
+                if (user.likedVideos.includes(currentVideo.id)) {
+                    // убрать лайк
+                    currentVideo.likes -= 1;
+                    user.likedVideos = user.likedVideos.filter(id => id !== currentVideo.id);
+                    likeBtn.classList.remove('liked');
+                } else {
+                    // поставить лайк
+                    currentVideo.likes += 1;
+                    user.likedVideos.push(currentVideo.id);
+                    likeBtn.classList.add('liked');
+                    // если был дизлайк, убрать его
+                    if (user.dislikedVideos.includes(currentVideo.id)) {
+                        currentVideo.dislikes -= 1;
+                        user.dislikedVideos = user.dislikedVideos.filter(id => id !== currentVideo.id);
+                        dislikeBtn.classList.remove('liked');
+                    }
+                }
+                likeCount.innerText = currentVideo.likes;
+                dislikeCount.innerText = currentVideo.dislikes;
+                saveVideos();
+                saveUsers();
+            });
+
+            dislikeBtn.addEventListener('click', () => {
+                if (!currentUser) { alert('Войдите, чтобы оценивать'); authModal.classList.add('active'); return; }
+                if (!currentVideo) return;
+                const user = users[currentUser.name];
+                if (user.dislikedVideos.includes(currentVideo.id)) {
+                    currentVideo.dislikes -= 1;
+                    user.dislikedVideos = user.dislikedVideos.filter(id => id !== currentVideo.id);
+                    dislikeBtn.classList.remove('liked');
+                } else {
+                    currentVideo.dislikes += 1;
+                    user.dislikedVideos.push(currentVideo.id);
+                    dislikeBtn.classList.add('liked');
+                    if (user.likedVideos.includes(currentVideo.id)) {
+                        currentVideo.likes -= 1;
+                        user.likedVideos = user.likedVideos.filter(id => id !== currentVideo.id);
+                        likeBtn.classList.remove('liked');
+                    }
+                }
+                likeCount.innerText = currentVideo.likes;
+                dislikeCount.innerText = currentVideo.dislikes;
+                saveVideos();
+                saveUsers();
+            });
+
+            subBtn.addEventListener('click', () => {
+                if (!currentUser) { alert('Войдите, чтобы подписаться'); authModal.classList.add('active'); return; }
+                if (!currentVideo) return;
+                const channel = currentVideo.channel;
+                const user = users[currentUser.name];
+                if (user.subscriptions.includes(channel)) {
+                    user.subscriptions = user.subscriptions.filter(c => c !== channel);
+                } else {
+                    user.subscriptions.push(channel);
+                }
+                saveUsers();
+                updateSubButton(channel);
+                const subsCount = users[channel] ? users[channel].subscriptions.length : 0;
+                channelSubs.innerText = subsCount + ' подписчиков';
+            });
+
+            channelInfoDiv.addEventListener('click', () => {
+                if (currentVideo) openChannelPage(currentVideo.channel);
+            });
+
+            sendComment.addEventListener('click', () => {
+                if (!currentUser) { alert('Войдите, чтобы комментировать'); authModal.classList.add('active'); return; }
+                const text = commentInput.value.trim();
+                if (!text || !currentVideo) return;
+                const newComment = {
+                    author: currentUser.name,
+                    text: text,
+                    date: new Date().toLocaleDateString('ru-RU')
+                };
+                currentVideo.comments.push(newComment);
+                renderComments(currentVideo.comments);
+                commentInput.value = '';
+                saveVideos();
+            });
+
+            // Поиск
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                showPage('homePage');
+                renderHomeGrid(query);
+            });
+
+            // Табы
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    if (target === 'home') {
+                        showPage('homePage');
+                        renderHomeGrid();
+                    } else if (target === 'subscriptions') {
+                        showPage('subscriptionsPage');
+                        if (currentUser) {
+                            const user = users[currentUser.name];
+                            const subsVideos = videos.filter(v => user.subscriptions.includes(v.channel));
+                            let html = '';
+                            subsVideos.forEach(v => {
+                                html += `
+                                    <div class="video-card" data-id="${v.id}">
+                                        <div class="thumbnail"><img src="${v.preview}" onerror="this.src='https://via.placeholder.com/280x158?text=TapTube'"><span class="duration">${v.duration}</span></div>
+                                        <div class="video-info"><div class="video-details"><h4>${v.title}</h4><p>${v.channel}</p><p>${formatViews(v.views)}</p></div></div>
+                                    </div>
+                                `;
+                            });
+                            subsGrid.innerHTML = html || '<p>Вы ещё не подписаны на каналы</p>';
+                            document.querySelectorAll('#subscriptionsGrid .video-card').forEach(card => {
+                                card.addEventListener('click', () => openVideo(parseInt(card.dataset.id)));
+                            });
+                        } else {
+                            subsGrid.innerHTML = '<p>Войдите, чтобы видеть видео по подпискам</p>';
+                        }
+                    } else if (target === 'library') {
+                        showPage('libraryPage');
+                    }
+                });
+            });
+
+            // Логотип
+            logoHome.addEventListener('click', () => {
+                showPage('homePage');
+                renderHomeGrid();
+            });
+
+            // Аватарка (вход/выход)
+            avatarBtn.addEventListener('click', () => {
+                if (currentUser) {
+                    if (confirm(`Выйти из аккаунта ${currentUser.name}?`)) {
+                        currentUser = null;
+                        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+                        avatarBtn.innerText = 'T';
+                        currentUserCommentAvatar.innerText = 'T';
+                        // Обновить текущую страницу
+                        if (!watchPage.classList.contains('hidden') && currentVideo) {
+                            openVideo(currentVideo.id);
+                        }
+                        if (!channelPage.classList.contains('hidden') && currentChannelName) {
+                            openChannelPage(currentChannelName);
+                        }
+                    }
+                } else {
+                    authModal.classList.add('active');
+                }
+            });
+
+            closeAuthModal.addEventListener('click', () => authModal.classList.remove('active'));
+
+            loginBtn.addEventListener('click', () => {
+                const name = loginName.value.trim();
+                if (!name) return;
+                currentUser = { name: name };
+                ensureUser(name);
+                saveCurrentUser();
+                avatarBtn.innerText = name[0].toUpperCase();
+                currentUserCommentAvatar.innerText = name[0].toUpperCase();
+                authModal.classList.remove('active');
+                loginName.value = '';
+                // Обновить страницу
+                if (!watchPage.classList.contains('hidden') && currentVideo) openVideo(currentVideo.id);
+                if (!channelPage.classList.contains('hidden') && currentChannelName) openChannelPage(currentChannelName);
+            });
+
+            registerBtn.addEventListener('click', () => {
+                const name = loginName.value.trim() || 'User_' + Math.floor(Math.random()*1000);
+                currentUser = { name: name };
+                ensureUser(name);
+                saveCurrentUser();
+                avatarBtn.innerText = name[0].toUpperCase();
+                currentUserCommentAvatar.innerText = name[0].toUpperCase();
+                authModal.classList.remove('active');
+                loginName.value = '';
+                if (!watchPage.classList.contains('hidden') && currentVideo) openVideo(currentVideo.id);
+                if (!channelPage.classList.contains('hidden') && currentChannelName) openChannelPage(currentChannelName);
+            });
+
+            // Загрузка видео
+            uploadBtn.addEventListener('click', () => {
+                if (!currentUser) {
+                    alert('Войдите, чтобы загружать видео');
+                    authModal.classList.add('active');
+                    return;
+                }
+                uploadModal.classList.add('active');
+            });
+
+            closeUploadModal.addEventListener('click', () => uploadModal.classList.remove('active'));
+
+            publishVideoBtn.addEventListener('click', () => {
+                const title = videoTitleInput.value.trim();
+                const desc = videoDescInput.value.trim();
+                const src = videoSrcInput.value.trim();
+                const preview = videoPreviewInput.value.trim();
+                if (!title || !src) {
+                    alert('Название и ссылка на видео обязательны');
+                    return;
+                }
+                const newId = videos.length ? Math.max(...videos.map(v => v.id)) + 1 : 1;
+                const newVideo = {
+                    id: newId,
+                    title: title,
+                    channel: currentUser.name,
+                    views: 0,
+                    date: new Date().toLocaleDateString('ru-RU'),
+                    duration: '?',
+                    src: src,
+                    preview: preview || 'https://via.placeholder.com/280x158?text=TapTube',
+                    description: desc || 'Нет описания',
+                    likes: 0,
+                    dislikes: 0,
+                    comments: []
+                };
+                videos.push(newVideo);
+                saveVideos();
+                const user = users[currentUser.name];
+                user.uploads.push(newId);
+                saveUsers();
+                uploadModal.classList.remove('active');
+                videoTitleInput.value = '';
+                videoDescInput.value = '';
+                videoSrcInput.value = '';
+                videoPreviewInput.value = '';
+                alert('Видео опубликовано!');
+                showPage('homePage');
+                renderHomeGrid();
+            });
+
+            // Инициализация
+            renderHomeGrid();
+            if (currentUser) {
+                avatarBtn.innerText = currentUser.name[0].toUpperCase();
+                currentUserCommentAvatar.innerText = currentUser.name[0].toUpperCase();
+            }
+        })();
+    </script>
+</body>
+</html>
