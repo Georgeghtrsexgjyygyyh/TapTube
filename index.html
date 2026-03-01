@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TapTube — смотри и загружай</title>
+    <title>TapTube — загружай и смотри</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -12,18 +12,15 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
         }
-
         body {
             background: #f9f9f9;
             color: #0f0f0f;
             transition: 0.2s;
         }
-
         body.dark {
             background: #0f0f0f;
             color: #efefef;
         }
-
         .header {
             display: flex;
             align-items: center;
@@ -36,12 +33,10 @@
             top: 0;
             z-index: 1000;
         }
-
         body.dark .header {
             background: #202020;
             border-bottom-color: #383838;
         }
-
         .logo {
             display: flex;
             align-items: center;
@@ -51,20 +46,12 @@
             color: #ff0055;
             cursor: pointer;
         }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
+        .logo i { font-size: 2rem; }
         .search-container {
             flex: 0 1 600px;
             margin: 0 20px;
         }
-
-        .search-container form {
-            display: flex;
-        }
-
+        .search-container form { display: flex; }
         .search-container input {
             flex: 1;
             height: 44px;
@@ -75,13 +62,11 @@
             font-size: 1rem;
             outline: none;
         }
-
         body.dark .search-container input {
             background: #121212;
             border-color: #383838;
             color: #f1f1f1;
         }
-
         .search-container button {
             width: 70px;
             height: 44px;
@@ -91,19 +76,16 @@
             background: #f0f0f0;
             cursor: pointer;
         }
-
         body.dark .search-container button {
             background: #313131;
             border-color: #383838;
             color: #f1f1f1;
         }
-
         .header-icons {
             display: flex;
             align-items: center;
             gap: 24px;
         }
-
         .upload-btn {
             background: #ff0055;
             color: white;
@@ -116,7 +98,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .avatar {
             width: 40px;
             height: 40px;
@@ -131,7 +112,6 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(255,0,85,0.3);
         }
-
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -139,12 +119,10 @@
             background: #fff;
             border-bottom: 1px solid #e5e5e5;
         }
-
         body.dark .nav-tabs {
             background: #202020;
             border-bottom-color: #383838;
         }
-
         .nav-tab {
             padding: 8px 20px;
             border-radius: 32px;
@@ -152,31 +130,24 @@
             font-weight: 500;
             cursor: pointer;
         }
-
         body.dark .nav-tab {
             background: #313131;
             color: #efefef;
         }
-
         .nav-tab.active {
             background: #0f0f0f;
             color: white;
         }
-
         body.dark .nav-tab.active {
             background: #efefef;
             color: #0f0f0f;
         }
-
         .main-container {
             max-width: 1600px;
             margin: 0 auto;
             padding: 24px;
         }
-
-        .page.hidden {
-            display: none;
-        }
+        .page.hidden { display: none; }
 
         /* Сетка видео */
         .video-grid {
@@ -184,7 +155,6 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
         }
-
         .video-card {
             cursor: pointer;
             border-radius: 16px;
@@ -193,48 +163,39 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             transition: 0.2s;
         }
-
         body.dark .video-card {
             background: #1a1a1a;
         }
-
         .video-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(0,0,0,0.1);
         }
-
         .thumbnail {
             position: relative;
             aspect-ratio: 16/9;
             background: #ccc;
         }
-
         .thumbnail img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .duration {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
+            bottom: 8px; right: 8px;
             background: rgba(0,0,0,0.8);
             color: white;
             padding: 2px 6px;
             border-radius: 6px;
             font-size: 0.8rem;
         }
-
         .video-info {
             padding: 12px;
             display: flex;
             gap: 12px;
         }
-
         .channel-avatar-small {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border-radius: 50%;
             background: #4caf50;
             display: flex;
@@ -245,21 +206,16 @@
             flex-shrink: 0;
             cursor: pointer;
         }
-
         .video-details h4 {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 4px;
         }
-
         .video-details p {
             font-size: 0.85rem;
             color: #606060;
         }
-
-        body.dark .video-details p {
-            color: #aaa;
-        }
+        body.dark .video-details p { color: #aaa; }
 
         /* Страница просмотра */
         .watch-container {
@@ -267,30 +223,25 @@
             gap: 28px;
             flex-wrap: wrap;
         }
-
         .watch-player {
             flex: 2;
             min-width: 300px;
         }
-
         .watch-player video {
             width: 100%;
             border-radius: 20px;
             background: black;
             max-height: 540px;
         }
-
         .watch-side {
             flex: 1;
             min-width: 280px;
         }
-
         .video-title {
             font-size: 1.7rem;
             font-weight: 600;
             margin: 16px 0 8px;
         }
-
         .video-actions {
             display: flex;
             align-items: center;
@@ -300,12 +251,10 @@
             margin-bottom: 16px;
             flex-wrap: wrap;
         }
-
         .like-bar {
             display: flex;
             gap: 24px;
         }
-
         .like-item {
             display: flex;
             align-items: center;
@@ -313,32 +262,22 @@
             cursor: pointer;
             font-weight: 500;
         }
-
-        .like-item i {
-            font-size: 1.4rem;
-        }
-
-        .like-item.liked i {
-            color: #3ea6ff;
-        }
-
+        .like-item i { font-size: 1.4rem; }
+        .like-item.liked i { color: #3ea6ff; }
         .channel-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin: 20px 0;
         }
-
         .channel-info {
             display: flex;
             align-items: center;
             gap: 16px;
             cursor: pointer;
         }
-
         .channel-avatar-large {
-            width: 56px;
-            height: 56px;
+            width: 56px; height: 56px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff0055, #ffaa00);
             display: flex;
@@ -348,7 +287,6 @@
             font-weight: bold;
             font-size: 1.5rem;
         }
-
         .sub-btn {
             background: #cc0000;
             color: white;
@@ -358,11 +296,7 @@
             font-weight: 600;
             cursor: pointer;
         }
-
-        .sub-btn.subscribed {
-            background: #606060;
-        }
-
+        .sub-btn.subscribed { background: #606060; }
         .description-box {
             background: #f5f5f5;
             padding: 16px;
@@ -370,22 +304,15 @@
             margin: 20px 0;
             white-space: pre-line;
         }
-
-        body.dark .description-box {
-            background: #222;
-        }
+        body.dark .description-box { background: #222; }
 
         /* Комментарии */
-        .comments-section {
-            margin-top: 32px;
-        }
-
+        .comments-section { margin-top: 32px; }
         .comment-input-area {
             display: flex;
             gap: 16px;
             margin: 20px 0;
         }
-
         .comment-input-area input {
             flex: 1;
             background: transparent;
@@ -396,16 +323,13 @@
             outline: none;
             color: inherit;
         }
-
         .comment {
             display: flex;
             gap: 16px;
             margin-bottom: 24px;
         }
-
         .comment-avatar {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 50%;
             background: #9c27b0;
             display: flex;
@@ -413,32 +337,18 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            flex-shrink: 0;
         }
-
-        .comment-content {
-            flex: 1;
-        }
-
-        .comment-author {
-            font-weight: 600;
-        }
-
-        .comment-date {
-            font-size: 0.75rem;
-            color: #606060;
-            margin-top: 6px;
-        }
+        .comment-content { flex: 1; }
+        .comment-author { font-weight: 600; }
+        .comment-date { font-size: 0.75rem; color: #606060; margin-top: 6px; }
 
         /* Страница канала */
         .channel-banner {
-            width: 100%;
-            height: 200px;
+            width: 100%; height: 200px;
             background: linear-gradient(90deg, #ff0055, #ffaa00);
             border-radius: 24px;
             margin-bottom: 20px;
         }
-
         .channel-header {
             display: flex;
             align-items: center;
@@ -446,31 +356,20 @@
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
-
-        .channel-stats {
-            color: #606060;
-            font-size: 0.95rem;
-        }
+        .channel-stats { color: #606060; font-size: 0.95rem; }
 
         /* Модалки */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
             align-items: center;
             justify-content: center;
             z-index: 2000;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
             background: #fff;
             padding: 40px;
@@ -481,26 +380,20 @@
             overflow-y: auto;
             position: relative;
         }
-
         body.dark .modal-content {
             background: #1e1e1e;
             color: #efefef;
         }
-
         .close-modal {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 20px; right: 20px;
             font-size: 1.5rem;
             cursor: pointer;
         }
-
-        .modal-content h2 {
-            margin-bottom: 24px;
-        }
-
+        .modal-content h2 { margin-bottom: 24px; }
         .modal-content input,
-        .modal-content textarea {
+        .modal-content textarea,
+        .modal-content input[type="file"] {
             width: 100%;
             padding: 16px;
             margin: 12px 0;
@@ -509,14 +402,12 @@
             font-size: 1rem;
             background: #f9f9f9;
         }
-
         body.dark .modal-content input,
         body.dark .modal-content textarea {
             background: #2a2a2a;
             border-color: #444;
             color: white;
         }
-
         .modal-content button {
             width: 100%;
             padding: 16px;
@@ -529,14 +420,19 @@
             cursor: pointer;
             margin-top: 16px;
         }
-
-        hr {
-            margin: 20px 0;
-            border-color: #e0e0e0;
+        hr { margin: 20px 0; border-color: #e0e0e0; }
+        body.dark hr { border-color: #2a2a2a; }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 12px 0;
+            font-size: 0.9rem;
         }
-
-        body.dark hr {
-            border-color: #2a2a2a;
+        body.dark .warning {
+            background: #332701;
+            color: #ffd970;
         }
     </style>
 </head>
@@ -600,7 +496,7 @@
                         <div class="channel-info" id="channelInfo">
                             <div class="channel-avatar-large" id="channelAvatar">S</div>
                             <div>
-                                <h3 id="channelName">SasGShitRoliki</h3>
+                                <h3 id="channelName">TapTube Originals</h3>
                                 <p id="channelSubs">0 подписчиков</p>
                             </div>
                         </div>
@@ -661,23 +557,41 @@
             <h2>Загрузить видео</h2>
             <input type="text" id="videoTitleInput" placeholder="Название видео">
             <textarea id="videoDescInput" placeholder="Описание" rows="3"></textarea>
-            <input type="text" id="videoSrcInput" placeholder="Ссылка на видео (mp4)">
-            <input type="text" id="videoPreviewInput" placeholder="Ссылка на превью (jpg/png)">
+            
+            <div style="margin: 15px 0;">
+                <label style="font-weight:600;">Выберите способ загрузки:</label>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button id="tabLink" class="sub-btn" style="flex:1;">По ссылке</button>
+                    <button id="tabFile" class="sub-btn" style="flex:1;">С компьютера</button>
+                </div>
+            </div>
+
+            <div id="linkUploadSection">
+                <input type="text" id="videoSrcInput" placeholder="Ссылка на видео (mp4)">
+                <input type="text" id="videoPreviewInput" placeholder="Ссылка на превью (jpg/png) — необязательно">
+                <p class="warning">Используйте прямые ссылки на .mp4 файлы. Пример: https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</p>
+            </div>
+
+            <div id="fileUploadSection" style="display:none;">
+                <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg">
+                <input type="file" id="previewFileInput" accept="image/*">
+                <p class="warning">⚠️ Видео с компьютера будет доступно только пока открыта страница. После перезагрузки оно исчезнет. Для постоянного хранения используйте ссылку.</p>
+            </div>
+
             <button id="publishVideoBtn">Опубликовать</button>
-            <p style="font-size:0.8rem; color:#888;">Пример ссылки: https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</p>
         </div>
     </div>
 
     <script>
         (function() {
-            // ---------- РАБОЧИЕ ВИДЕО С ПУБЛИЧНОГО ИСТОЧНИКА ----------
+            // ---------- БАЗОВЫЕ ВИДЕО ----------
             const defaultVideos = [
                 {
                     id: 1,
                     title: 'Big Buck Bunny (официальный тест)',
                     channel: 'TapTube Originals',
                     views: 1500000,
-                    date: '2025-01-15',
+                    date: new Date().toLocaleDateString('ru-RU'),
                     duration: '9:56',
                     src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
                     preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
@@ -685,7 +599,7 @@
                     likes: 34500,
                     dislikes: 1200,
                     comments: [
-                        { author: 'Аниман', text: 'Обожаю эту работу!', date: '2025-02-01' }
+                        { author: 'TapTube', text: 'Добро пожаловать!', date: '2025-01-01' }
                     ]
                 },
                 {
@@ -693,7 +607,7 @@
                     title: 'Elephant\'s Dream',
                     channel: 'TapTube Originals',
                     views: 890000,
-                    date: '2025-02-10',
+                    date: new Date().toLocaleDateString('ru-RU'),
                     duration: '10:53',
                     src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
                     preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
@@ -707,7 +621,7 @@
                     title: 'Sintel',
                     channel: 'TapTube Originals',
                     views: 2200000,
-                    date: '2025-01-28',
+                    date: new Date().toLocaleDateString('ru-RU'),
                     duration: '14:48',
                     src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
                     preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg',
@@ -721,7 +635,7 @@
                     title: 'Tears of Steel',
                     channel: 'TapTube Originals',
                     views: 1100000,
-                    date: '2025-02-05',
+                    date: new Date().toLocaleDateString('ru-RU'),
                     duration: '12:14',
                     src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
                     preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg',
@@ -739,12 +653,12 @@
                 CURRENT_USER: 'tapTubeCurrentUser'
             };
 
-            // Загружаем данные из localStorage или используем default
+            // Загружаем данные из localStorage
             let videos = JSON.parse(localStorage.getItem(STORAGE_KEYS.VIDEOS)) || defaultVideos;
             let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || {};
             let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
 
-            // Сохранение
+            // Сохраняем
             function saveVideos() {
                 localStorage.setItem(STORAGE_KEYS.VIDEOS, JSON.stringify(videos));
             }
@@ -755,7 +669,7 @@
                 localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
             }
 
-            // Создать пользователя, если не существует
+            // Инициализация пользователя
             function ensureUser(username) {
                 if (!users[username]) {
                     users[username] = {
@@ -778,7 +692,7 @@
                 return num.toString();
             }
 
-            // ---------- DOM ЭЛЕМЕНТЫ ----------
+            // ---------- DOM элементы ----------
             const homePage = document.getElementById('homePage');
             const subsPage = document.getElementById('subscriptionsPage');
             const libraryPage = document.getElementById('libraryPage');
@@ -820,6 +734,12 @@
             const videoDescInput = document.getElementById('videoDescInput');
             const videoSrcInput = document.getElementById('videoSrcInput');
             const videoPreviewInput = document.getElementById('videoPreviewInput');
+            const videoFileInput = document.getElementById('videoFileInput');
+            const previewFileInput = document.getElementById('previewFileInput');
+            const tabLink = document.getElementById('tabLink');
+            const tabFile = document.getElementById('tabFile');
+            const linkUploadSection = document.getElementById('linkUploadSection');
+            const fileUploadSection = document.getElementById('fileUploadSection');
             const navTabs = document.querySelectorAll('.nav-tab');
             const logoHome = document.getElementById('logoHome');
             const searchForm = document.getElementById('searchForm');
@@ -832,15 +752,28 @@
             const channelPageSubBtn = document.getElementById('channelPageSubBtn');
             const channelVideosGrid = document.getElementById('channelVideosGrid');
 
-            // Состояние
+            // Состояния
             let currentVideo = null;
             let currentChannelName = null;
 
-            // ---------- ФУНКЦИИ ОТОБРАЖЕНИЯ ----------
+            // ---------- Переключение вкладок загрузки ----------
+            tabLink.addEventListener('click', () => {
+                tabLink.classList.add('subscribed');
+                tabFile.classList.remove('subscribed');
+                linkUploadSection.style.display = 'block';
+                fileUploadSection.style.display = 'none';
+            });
+            tabFile.addEventListener('click', () => {
+                tabFile.classList.add('subscribed');
+                tabLink.classList.remove('subscribed');
+                linkUploadSection.style.display = 'none';
+                fileUploadSection.style.display = 'block';
+            });
+
+            // ---------- Функции отображения ----------
             function showPage(pageId) {
                 [homePage, subsPage, libraryPage, watchPage, channelPage].forEach(p => p.classList.add('hidden'));
                 document.getElementById(pageId).classList.remove('hidden');
-                // Активный таб (грубо)
                 navTabs.forEach(t => t.classList.remove('active'));
                 if (pageId === 'homePage') document.querySelector('[data-tab="home"]').classList.add('active');
                 else if (pageId === 'subscriptionsPage') document.querySelector('[data-tab="subscriptions"]').classList.add('active');
@@ -871,7 +804,6 @@
                 });
                 homeGrid.innerHTML = html;
 
-                // Обработчики
                 document.querySelectorAll('#homeGrid .video-card').forEach(card => {
                     card.addEventListener('click', (e) => {
                         if (e.target.closest('.channel-avatar-small') || e.target.closest('.channel-name')) {
@@ -893,9 +825,9 @@
                 showPage('watchPage');
 
                 watchVideo.src = video.src;
-                watchVideo.load(); // на случай, если уже было другое видео
+                watchVideo.load();
                 watchVideo.onerror = () => {
-                    alert('Не удалось загрузить видео. Проверьте ссылку.');
+                    alert('Не удалось загрузить видео. Возможно, ссылка устарела или файл удалён.');
                 };
                 watchTitle.innerText = video.title;
                 watchViews.innerText = `${formatViews(video.views)} просмотров • ${video.date}`;
@@ -904,15 +836,13 @@
                 dislikeCount.innerText = video.dislikes;
                 channelNameSpan.innerText = video.channel;
                 channelAvatar.innerText = video.channel[0].toUpperCase();
-                // Количество подписчиков канала
+
                 const subsCount = users[video.channel] ? users[video.channel].subscriptions.length : 0;
                 channelSubs.innerText = subsCount + ' подписчиков';
 
-                // Статус подписки
                 updateSubButton(video.channel);
-
-                // Статус лайка
                 resetLikeDislikeButtons();
+
                 if (currentUser) {
                     const user = users[currentUser.name];
                     if (user.likedVideos.includes(video.id)) {
@@ -1002,7 +932,6 @@
                 const channelVideos = videos.filter(v => v.channel === channelName);
                 channelPageStats.innerText = `подписчиков: ${user.subscriptions.length} • видео: ${channelVideos.length}`;
 
-                // Кнопка подписки на странице канала
                 if (currentUser && users[currentUser.name].subscriptions.includes(channelName)) {
                     channelPageSubBtn.innerText = 'Вы подписаны';
                     channelPageSubBtn.classList.add('subscribed');
@@ -1037,22 +966,19 @@
                 });
             }
 
-            // ---------- ОБРАБОТЧИКИ ----------
+            // ---------- Обработчики ----------
             likeBtn.addEventListener('click', () => {
                 if (!currentUser) { alert('Войдите, чтобы оценивать'); authModal.classList.add('active'); return; }
                 if (!currentVideo) return;
                 const user = users[currentUser.name];
                 if (user.likedVideos.includes(currentVideo.id)) {
-                    // убрать лайк
                     currentVideo.likes -= 1;
                     user.likedVideos = user.likedVideos.filter(id => id !== currentVideo.id);
                     likeBtn.classList.remove('liked');
                 } else {
-                    // поставить лайк
                     currentVideo.likes += 1;
                     user.likedVideos.push(currentVideo.id);
                     likeBtn.classList.add('liked');
-                    // если был дизлайк, убрать его
                     if (user.dislikedVideos.includes(currentVideo.id)) {
                         currentVideo.dislikes -= 1;
                         user.dislikedVideos = user.dislikedVideos.filter(id => id !== currentVideo.id);
@@ -1180,7 +1106,6 @@
                         localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
                         avatarBtn.innerText = 'T';
                         currentUserCommentAvatar.innerText = 'T';
-                        // Обновить текущую страницу
                         if (!watchPage.classList.contains('hidden') && currentVideo) {
                             openVideo(currentVideo.id);
                         }
@@ -1205,7 +1130,6 @@
                 currentUserCommentAvatar.innerText = name[0].toUpperCase();
                 authModal.classList.remove('active');
                 loginName.value = '';
-                // Обновить страницу
                 if (!watchPage.classList.contains('hidden') && currentVideo) openVideo(currentVideo.id);
                 if (!channelPage.classList.contains('hidden') && currentChannelName) openChannelPage(currentChannelName);
             });
@@ -1230,6 +1154,18 @@
                     authModal.classList.add('active');
                     return;
                 }
+                // Сброс полей
+                videoTitleInput.value = '';
+                videoDescInput.value = '';
+                videoSrcInput.value = '';
+                videoPreviewInput.value = '';
+                videoFileInput.value = '';
+                previewFileInput.value = '';
+                // По умолчанию вкладка "По ссылке"
+                tabLink.classList.add('subscribed');
+                tabFile.classList.remove('subscribed');
+                linkUploadSection.style.display = 'block';
+                fileUploadSection.style.display = 'none';
                 uploadModal.classList.add('active');
             });
 
@@ -1238,12 +1174,43 @@
             publishVideoBtn.addEventListener('click', () => {
                 const title = videoTitleInput.value.trim();
                 const desc = videoDescInput.value.trim();
-                const src = videoSrcInput.value.trim();
-                const preview = videoPreviewInput.value.trim();
-                if (!title || !src) {
-                    alert('Название и ссылка на видео обязательны');
+                if (!title) {
+                    alert('Введите название видео');
                     return;
                 }
+
+                // Определяем, какая вкладка активна
+                const isLinkMode = linkUploadSection.style.display !== 'none';
+
+                if (isLinkMode) {
+                    const src = videoSrcInput.value.trim();
+                    if (!src) {
+                        alert('Введите ссылку на видео');
+                        return;
+                    }
+                    const preview = videoPreviewInput.value.trim() || 'https://via.placeholder.com/280x158?text=TapTube';
+                    publishVideo(title, desc, src, preview, 'link');
+                } else {
+                    // Загрузка с компьютера
+                    const videoFile = videoFileInput.files[0];
+                    if (!videoFile) {
+                        alert('Выберите видеофайл');
+                        return;
+                    }
+                    // Создаём Blob URL для видео
+                    const videoBlobUrl = URL.createObjectURL(videoFile);
+                    // Превью (если есть)
+                    let previewUrl = 'https://via.placeholder.com/280x158?text=TapTube';
+                    if (previewFileInput.files[0]) {
+                        previewUrl = URL.createObjectURL(previewFileInput.files[0]);
+                    }
+                    // Длительность (заглушка)
+                    const duration = '?';
+                    publishVideo(title, desc, videoBlobUrl, previewUrl, 'file', duration);
+                }
+            });
+
+            function publishVideo(title, desc, src, preview, type, duration = '?') {
                 const newId = videos.length ? Math.max(...videos.map(v => v.id)) + 1 : 1;
                 const newVideo = {
                     id: newId,
@@ -1251,13 +1218,14 @@
                     channel: currentUser.name,
                     views: 0,
                     date: new Date().toLocaleDateString('ru-RU'),
-                    duration: '?',
+                    duration: duration,
                     src: src,
-                    preview: preview || 'https://via.placeholder.com/280x158?text=TapTube',
+                    preview: preview,
                     description: desc || 'Нет описания',
                     likes: 0,
                     dislikes: 0,
-                    comments: []
+                    comments: [],
+                    _temp: type === 'file' // пометка, что временное
                 };
                 videos.push(newVideo);
                 saveVideos();
@@ -1265,20 +1233,21 @@
                 user.uploads.push(newId);
                 saveUsers();
                 uploadModal.classList.remove('active');
-                videoTitleInput.value = '';
-                videoDescInput.value = '';
-                videoSrcInput.value = '';
-                videoPreviewInput.value = '';
-                alert('Видео опубликовано!');
+                alert('Видео опубликовано! ' + (type === 'file' ? 'Оно будет доступно до перезагрузки страницы.' : ''));
                 showPage('homePage');
                 renderHomeGrid();
-            });
+            }
 
             // Инициализация
             renderHomeGrid();
             if (currentUser) {
                 avatarBtn.innerText = currentUser.name[0].toUpperCase();
                 currentUserCommentAvatar.innerText = currentUser.name[0].toUpperCase();
+            }
+
+            // Тёмная тема по системным настройкам
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark');
             }
         })();
     </script>
