@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TapTube — загружай и смотри</title>
+    <title>TapTube — надёжное хранилище видео</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -434,6 +434,16 @@
             background: #332701;
             color: #ffd970;
         }
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -462,24 +472,17 @@
     </div>
 
     <div class="main-container">
-        <!-- Главная -->
         <div id="homePage" class="page">
             <div class="video-grid" id="homeGrid"></div>
         </div>
-
-        <!-- Подписки -->
         <div id="subscriptionsPage" class="page hidden">
             <h2>Видео от подписок</h2>
             <div class="video-grid" id="subscriptionsGrid"></div>
         </div>
-
-        <!-- Библиотека -->
         <div id="libraryPage" class="page hidden">
             <h2>Библиотека</h2>
-            <p>Здесь будут ваши лайки и плейлисты.</p>
+            <p>Здесь будут ваши лайки и плейлисты (в разработке).</p>
         </div>
-
-        <!-- Страница просмотра видео -->
         <div id="watchPage" class="page hidden">
             <div class="watch-container">
                 <div class="watch-player">
@@ -496,11 +499,12 @@
                         <div class="channel-info" id="channelInfo">
                             <div class="channel-avatar-large" id="channelAvatar">S</div>
                             <div>
-                                <h3 id="channelName">TapTube Originals</h3>
+                                <h3 id="channelName">TapTube</h3>
                                 <p id="channelSubs">0 подписчиков</p>
                             </div>
                         </div>
                         <button class="sub-btn" id="subBtn">Подписаться</button>
+                        <button class="delete-btn" id="deleteVideoBtn" style="display: none;">Удалить</button>
                     </div>
                     <div class="description-box" id="watchDescription"></div>
 
@@ -520,8 +524,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Страница канала -->
         <div id="channelPage" class="page hidden">
             <div class="channel-banner"></div>
             <div class="channel-header">
@@ -537,7 +539,6 @@
         </div>
     </div>
 
-    <!-- Модалка входа -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <span class="close-modal" id="closeAuthModal">&times;</span>
@@ -550,117 +551,87 @@
         </div>
     </div>
 
-    <!-- Модалка загрузки -->
     <div class="modal" id="uploadModal">
         <div class="modal-content">
             <span class="close-modal" id="closeUploadModal">&times;</span>
             <h2>Загрузить видео</h2>
             <input type="text" id="videoTitleInput" placeholder="Название видео">
             <textarea id="videoDescInput" placeholder="Описание" rows="3"></textarea>
-            
-            <div style="margin: 15px 0;">
-                <label style="font-weight:600;">Выберите способ загрузки:</label>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button id="tabLink" class="sub-btn" style="flex:1;">По ссылке</button>
-                    <button id="tabFile" class="sub-btn" style="flex:1;">С компьютера</button>
-                </div>
-            </div>
-
-            <div id="linkUploadSection">
-                <input type="text" id="videoSrcInput" placeholder="Ссылка на видео (mp4)">
-                <input type="text" id="videoPreviewInput" placeholder="Ссылка на превью (jpg/png) — необязательно">
-                <p class="warning">Используйте прямые ссылки на .mp4 файлы. Пример: https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</p>
-            </div>
-
-            <div id="fileUploadSection" style="display:none;">
-                <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg">
-                <input type="file" id="previewFileInput" accept="image/*">
-                <p class="warning">⚠️ Видео с компьютера будет доступно только пока открыта страница. После перезагрузки оно исчезнет. Для постоянного хранения используйте ссылку.</p>
-            </div>
-
+            <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg">
+            <input type="file" id="previewFileInput" accept="image/*">
+            <p class="warning">Видео будет сохранено в браузере и будет доступно всем пользователям TapTube на этом устройстве.</p>
             <button id="publishVideoBtn">Опубликовать</button>
         </div>
     </div>
 
     <script>
         (function() {
-            // ---------- БАЗОВЫЕ ВИДЕО ----------
-            const defaultVideos = [
-                {
-                    id: 1,
-                    title: 'Big Buck Bunny (официальный тест)',
-                    channel: 'TapTube Originals',
-                    views: 1500000,
-                    date: new Date().toLocaleDateString('ru-RU'),
-                    duration: '9:56',
-                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
-                    description: 'Классический короткометражный фильм про кролика.',
-                    likes: 34500,
-                    dislikes: 1200,
-                    comments: [
-                        { author: 'TapTube', text: 'Добро пожаловать!', date: '2025-01-01' }
-                    ]
-                },
-                {
-                    id: 2,
-                    title: 'Elephant\'s Dream',
-                    channel: 'TapTube Originals',
-                    views: 890000,
-                    date: new Date().toLocaleDateString('ru-RU'),
-                    duration: '10:53',
-                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
-                    description: 'Первый открытый фильм проекта Blender.',
-                    likes: 18700,
-                    dislikes: 340,
-                    comments: []
-                },
-                {
-                    id: 3,
-                    title: 'Sintel',
-                    channel: 'TapTube Originals',
-                    views: 2200000,
-                    date: new Date().toLocaleDateString('ru-RU'),
-                    duration: '14:48',
-                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg',
-                    description: 'Драматическая история девушки и дракона.',
-                    likes: 41200,
-                    dislikes: 890,
-                    comments: []
-                },
-                {
-                    id: 4,
-                    title: 'Tears of Steel',
-                    channel: 'TapTube Originals',
-                    views: 1100000,
-                    date: new Date().toLocaleDateString('ru-RU'),
-                    duration: '12:14',
-                    src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-                    preview: 'https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg',
-                    description: 'Научно-фантастический короткометражный фильм.',
-                    likes: 28900,
-                    dislikes: 560,
-                    comments: []
-                }
-            ];
+            // --------------------  IndexedDB  --------------------
+            const DB_NAME = 'TapTubeDB';
+            const DB_VERSION = 1;
+            const VIDEO_STORE = 'videos';
+            let db = null;
 
-            // Ключи localStorage
+            function openDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        db = request.result;
+                        resolve(db);
+                    };
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(VIDEO_STORE)) {
+                            db.createObjectStore(VIDEO_STORE, { keyPath: 'id' });
+                        }
+                    };
+                });
+            }
+
+            async function saveVideoFile(id, fileBlob) {
+                const tx = db.transaction(VIDEO_STORE, 'readwrite');
+                const store = tx.objectStore(VIDEO_STORE);
+                store.put({ id, blob: fileBlob });
+                return new Promise((resolve, reject) => {
+                    tx.oncomplete = resolve;
+                    tx.onerror = reject;
+                });
+            }
+
+            async function getVideoFile(id) {
+                const tx = db.transaction(VIDEO_STORE, 'readonly');
+                const store = tx.objectStore(VIDEO_STORE);
+                const request = store.get(id);
+                return new Promise((resolve, reject) => {
+                    request.onsuccess = () => resolve(request.result ? request.result.blob : null);
+                    request.onerror = reject;
+                });
+            }
+
+            async function deleteVideoFile(id) {
+                const tx = db.transaction(VIDEO_STORE, 'readwrite');
+                const store = tx.objectStore(VIDEO_STORE);
+                store.delete(id);
+                return new Promise((resolve, reject) => {
+                    tx.oncomplete = resolve;
+                    tx.onerror = reject;
+                });
+            }
+
+            // --------------------  Данные (localStorage) --------------------
             const STORAGE_KEYS = {
-                VIDEOS: 'tapTubeVideos',
+                VIDEOS_META: 'tapTubeVideosMeta',
                 USERS: 'tapTubeUsers',
                 CURRENT_USER: 'tapTubeCurrentUser'
             };
 
-            // Загружаем данные из localStorage
-            let videos = JSON.parse(localStorage.getItem(STORAGE_KEYS.VIDEOS)) || defaultVideos;
+            let videosMeta = JSON.parse(localStorage.getItem(STORAGE_KEYS.VIDEOS_META)) || [];
             let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || {};
             let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
 
-            // Сохраняем
-            function saveVideos() {
-                localStorage.setItem(STORAGE_KEYS.VIDEOS, JSON.stringify(videos));
+            function saveVideosMeta() {
+                localStorage.setItem(STORAGE_KEYS.VIDEOS_META, JSON.stringify(videosMeta));
             }
             function saveUsers() {
                 localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
@@ -669,7 +640,6 @@
                 localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
             }
 
-            // Инициализация пользователя
             function ensureUser(username) {
                 if (!users[username]) {
                     users[username] = {
@@ -685,11 +655,32 @@
             }
             if (currentUser) ensureUser(currentUser.name);
 
-            // Форматирование просмотров
+            // Форматирование
             function formatViews(num) {
                 if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + ' млн';
                 if (num >= 1_000) return (num / 1_000).toFixed(1) + ' тыс';
                 return num.toString();
+            }
+
+            // Создание object URL для видео (из IndexedDB)
+            const videoUrlCache = new Map(); // id -> objectURL
+
+            async function getVideoUrl(videoId) {
+                if (videoUrlCache.has(videoId)) return videoUrlCache.get(videoId);
+                const blob = await getVideoFile(videoId);
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    videoUrlCache.set(videoId, url);
+                    return url;
+                }
+                return null;
+            }
+
+            function revokeVideoUrl(videoId) {
+                if (videoUrlCache.has(videoId)) {
+                    URL.revokeObjectURL(videoUrlCache.get(videoId));
+                    videoUrlCache.delete(videoId);
+                }
             }
 
             // ---------- DOM элементы ----------
@@ -698,7 +689,6 @@
             const libraryPage = document.getElementById('libraryPage');
             const watchPage = document.getElementById('watchPage');
             const channelPage = document.getElementById('channelPage');
-
             const homeGrid = document.getElementById('homeGrid');
             const subsGrid = document.getElementById('subscriptionsGrid');
             const watchVideo = document.getElementById('watchVideo');
@@ -710,6 +700,7 @@
             const likeBtn = document.getElementById('likeBtn');
             const dislikeBtn = document.getElementById('dislikeBtn');
             const subBtn = document.getElementById('subBtn');
+            const deleteVideoBtn = document.getElementById('deleteVideoBtn');
             const channelNameSpan = document.getElementById('channelName');
             const channelSubs = document.getElementById('channelSubs');
             const channelAvatar = document.getElementById('channelAvatar');
@@ -732,45 +723,24 @@
             const publishVideoBtn = document.getElementById('publishVideoBtn');
             const videoTitleInput = document.getElementById('videoTitleInput');
             const videoDescInput = document.getElementById('videoDescInput');
-            const videoSrcInput = document.getElementById('videoSrcInput');
-            const videoPreviewInput = document.getElementById('videoPreviewInput');
             const videoFileInput = document.getElementById('videoFileInput');
             const previewFileInput = document.getElementById('previewFileInput');
-            const tabLink = document.getElementById('tabLink');
-            const tabFile = document.getElementById('tabFile');
-            const linkUploadSection = document.getElementById('linkUploadSection');
-            const fileUploadSection = document.getElementById('fileUploadSection');
             const navTabs = document.querySelectorAll('.nav-tab');
             const logoHome = document.getElementById('logoHome');
             const searchForm = document.getElementById('searchForm');
             const searchInput = document.getElementById('searchInput');
 
-            // Элементы страницы канала
+            // Страница канала
             const channelPageAvatar = document.getElementById('channelPageAvatar');
             const channelPageName = document.getElementById('channelPageName');
             const channelPageStats = document.getElementById('channelPageStats');
             const channelPageSubBtn = document.getElementById('channelPageSubBtn');
             const channelVideosGrid = document.getElementById('channelVideosGrid');
 
-            // Состояния
             let currentVideo = null;
             let currentChannelName = null;
+            let currentVideoUrl = null;
 
-            // ---------- Переключение вкладок загрузки ----------
-            tabLink.addEventListener('click', () => {
-                tabLink.classList.add('subscribed');
-                tabFile.classList.remove('subscribed');
-                linkUploadSection.style.display = 'block';
-                fileUploadSection.style.display = 'none';
-            });
-            tabFile.addEventListener('click', () => {
-                tabFile.classList.add('subscribed');
-                tabLink.classList.remove('subscribed');
-                linkUploadSection.style.display = 'none';
-                fileUploadSection.style.display = 'block';
-            });
-
-            // ---------- Функции отображения ----------
             function showPage(pageId) {
                 [homePage, subsPage, libraryPage, watchPage, channelPage].forEach(p => p.classList.add('hidden'));
                 document.getElementById(pageId).classList.remove('hidden');
@@ -780,11 +750,10 @@
                 else if (pageId === 'libraryPage') document.querySelector('[data-tab="library"]').classList.add('active');
             }
 
-            // Рендер главной
-            function renderHomeGrid(filter = '') {
-                const filtered = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
+            async function renderHomeGrid(filter = '') {
+                const filtered = videosMeta.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
                 let html = '';
-                filtered.forEach(v => {
+                for (const v of filtered) {
                     html += `
                         <div class="video-card" data-id="${v.id}">
                             <div class="thumbnail">
@@ -801,34 +770,43 @@
                             </div>
                         </div>
                     `;
-                });
+                }
                 homeGrid.innerHTML = html;
+                attachGridListeners('#homeGrid');
+            }
 
-                document.querySelectorAll('#homeGrid .video-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
+            function attachGridListeners(containerSelector) {
+                document.querySelectorAll(`${containerSelector} .video-card`).forEach(card => {
+                    card.addEventListener('click', async (e) => {
                         if (e.target.closest('.channel-avatar-small') || e.target.closest('.channel-name')) {
                             const channel = e.target.closest('[data-channel]')?.dataset.channel;
                             if (channel) openChannelPage(channel);
                         } else {
                             const id = parseInt(card.dataset.id);
-                            openVideo(id);
+                            await openVideo(id);
                         }
                     });
                 });
             }
 
-            // Открыть видео
-            function openVideo(id) {
-                const video = videos.find(v => v.id === id);
+            async function openVideo(id) {
+                const video = videosMeta.find(v => v.id === id);
                 if (!video) return;
                 currentVideo = video;
                 showPage('watchPage');
 
-                watchVideo.src = video.src;
-                watchVideo.load();
-                watchVideo.onerror = () => {
-                    alert('Не удалось загрузить видео. Возможно, ссылка устарела или файл удалён.');
-                };
+                // Получаем URL видео из IndexedDB
+                const videoUrl = await getVideoUrl(video.id);
+                if (videoUrl) {
+                    if (currentVideoUrl) URL.revokeObjectURL(currentVideoUrl);
+                    currentVideoUrl = videoUrl;
+                    watchVideo.src = videoUrl;
+                    watchVideo.load();
+                } else {
+                    watchVideo.src = '';
+                    alert('Видео не найдено в хранилище.');
+                }
+
                 watchTitle.innerText = video.title;
                 watchViews.innerText = `${formatViews(video.views)} просмотров • ${video.date}`;
                 watchDescription.innerText = video.description;
@@ -845,12 +823,15 @@
 
                 if (currentUser) {
                     const user = users[currentUser.name];
-                    if (user.likedVideos.includes(video.id)) {
-                        likeBtn.classList.add('liked');
-                    }
-                    if (user.dislikedVideos.includes(video.id)) {
-                        dislikeBtn.classList.add('liked');
-                    }
+                    if (user.likedVideos.includes(video.id)) likeBtn.classList.add('liked');
+                    if (user.dislikedVideos.includes(video.id)) dislikeBtn.classList.add('liked');
+                }
+
+                // Показываем кнопку удаления, если текущий пользователь автор
+                if (currentUser && currentUser.name === video.channel) {
+                    deleteVideoBtn.style.display = 'inline-block';
+                } else {
+                    deleteVideoBtn.style.display = 'none';
                 }
 
                 renderComments(video.comments);
@@ -894,10 +875,10 @@
                 commentsList.innerHTML = html;
             }
 
-            function renderRecommendations(excludeId) {
-                const others = videos.filter(v => v.id !== excludeId).slice(0, 5);
+            async function renderRecommendations(excludeId) {
+                const others = videosMeta.filter(v => v.id !== excludeId).slice(0, 5);
                 let html = '';
-                others.forEach(v => {
+                for (const v of others) {
                     html += `
                         <div class="video-card" data-id="${v.id}" style="margin-bottom:12px;">
                             <div class="thumbnail">
@@ -912,24 +893,23 @@
                             </div>
                         </div>
                     `;
-                });
+                }
                 recommendationsDiv.innerHTML = html;
                 document.querySelectorAll('#recommendationsList .video-card').forEach(card => {
-                    card.addEventListener('click', () => {
+                    card.addEventListener('click', async () => {
                         const id = parseInt(card.dataset.id);
-                        openVideo(id);
+                        await openVideo(id);
                     });
                 });
             }
 
-            // Страница канала
-            function openChannelPage(channelName) {
+            async function openChannelPage(channelName) {
                 currentChannelName = channelName;
                 showPage('channelPage');
                 channelPageName.innerText = channelName;
                 channelPageAvatar.innerText = channelName[0].toUpperCase();
                 const user = users[channelName] || { subscriptions: [], uploads: [] };
-                const channelVideos = videos.filter(v => v.channel === channelName);
+                const channelVideos = videosMeta.filter(v => v.channel === channelName);
                 channelPageStats.innerText = `подписчиков: ${user.subscriptions.length} • видео: ${channelVideos.length}`;
 
                 if (currentUser && users[currentUser.name].subscriptions.includes(channelName)) {
@@ -941,7 +921,7 @@
                 }
 
                 let html = '';
-                channelVideos.forEach(v => {
+                for (const v of channelVideos) {
                     html += `
                         <div class="video-card" data-id="${v.id}">
                             <div class="thumbnail">
@@ -956,12 +936,12 @@
                             </div>
                         </div>
                     `;
-                });
+                }
                 channelVideosGrid.innerHTML = html;
                 document.querySelectorAll('#channelVideosGrid .video-card').forEach(card => {
-                    card.addEventListener('click', () => {
+                    card.addEventListener('click', async () => {
                         const id = parseInt(card.dataset.id);
-                        openVideo(id);
+                        await openVideo(id);
                     });
                 });
             }
@@ -987,7 +967,7 @@
                 }
                 likeCount.innerText = currentVideo.likes;
                 dislikeCount.innerText = currentVideo.dislikes;
-                saveVideos();
+                saveVideosMeta();
                 saveUsers();
             });
 
@@ -1011,7 +991,7 @@
                 }
                 likeCount.innerText = currentVideo.likes;
                 dislikeCount.innerText = currentVideo.dislikes;
-                saveVideos();
+                saveVideosMeta();
                 saveUsers();
             });
 
@@ -1047,10 +1027,25 @@
                 currentVideo.comments.push(newComment);
                 renderComments(currentVideo.comments);
                 commentInput.value = '';
-                saveVideos();
+                saveVideosMeta();
             });
 
-            // Поиск
+            deleteVideoBtn.addEventListener('click', async () => {
+                if (!currentUser || currentUser.name !== currentVideo.channel) return;
+                if (confirm('Удалить это видео? Оно исчезнет для всех.')) {
+                    // Удаляем из метаданных
+                    const index = videosMeta.findIndex(v => v.id === currentVideo.id);
+                    if (index !== -1) videosMeta.splice(index, 1);
+                    saveVideosMeta();
+                    // Удаляем файл из IndexedDB
+                    await deleteVideoFile(currentVideo.id);
+                    revokeVideoUrl(currentVideo.id);
+                    // Переходим на главную
+                    showPage('homePage');
+                    await renderHomeGrid();
+                }
+            });
+
             searchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const query = searchInput.value.trim();
@@ -1058,7 +1053,6 @@
                 renderHomeGrid(query);
             });
 
-            // Табы
             navTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const target = tab.dataset.tab;
@@ -1069,7 +1063,7 @@
                         showPage('subscriptionsPage');
                         if (currentUser) {
                             const user = users[currentUser.name];
-                            const subsVideos = videos.filter(v => user.subscriptions.includes(v.channel));
+                            const subsVideos = videosMeta.filter(v => user.subscriptions.includes(v.channel));
                             let html = '';
                             subsVideos.forEach(v => {
                                 html += `
@@ -1080,9 +1074,7 @@
                                 `;
                             });
                             subsGrid.innerHTML = html || '<p>Вы ещё не подписаны на каналы</p>';
-                            document.querySelectorAll('#subscriptionsGrid .video-card').forEach(card => {
-                                card.addEventListener('click', () => openVideo(parseInt(card.dataset.id)));
-                            });
+                            attachGridListeners('#subscriptionsGrid');
                         } else {
                             subsGrid.innerHTML = '<p>Войдите, чтобы видеть видео по подпискам</p>';
                         }
@@ -1092,13 +1084,11 @@
                 });
             });
 
-            // Логотип
             logoHome.addEventListener('click', () => {
                 showPage('homePage');
                 renderHomeGrid();
             });
 
-            // Аватарка (вход/выход)
             avatarBtn.addEventListener('click', () => {
                 if (currentUser) {
                     if (confirm(`Выйти из аккаунта ${currentUser.name}?`)) {
@@ -1106,12 +1096,8 @@
                         localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
                         avatarBtn.innerText = 'T';
                         currentUserCommentAvatar.innerText = 'T';
-                        if (!watchPage.classList.contains('hidden') && currentVideo) {
-                            openVideo(currentVideo.id);
-                        }
-                        if (!channelPage.classList.contains('hidden') && currentChannelName) {
-                            openChannelPage(currentChannelName);
-                        }
+                        if (!watchPage.classList.contains('hidden') && currentVideo) openVideo(currentVideo.id);
+                        if (!channelPage.classList.contains('hidden') && currentChannelName) openChannelPage(currentChannelName);
                     }
                 } else {
                     authModal.classList.add('active');
@@ -1147,71 +1133,39 @@
                 if (!channelPage.classList.contains('hidden') && currentChannelName) openChannelPage(currentChannelName);
             });
 
-            // Загрузка видео
             uploadBtn.addEventListener('click', () => {
                 if (!currentUser) {
                     alert('Войдите, чтобы загружать видео');
                     authModal.classList.add('active');
                     return;
                 }
-                // Сброс полей
                 videoTitleInput.value = '';
                 videoDescInput.value = '';
-                videoSrcInput.value = '';
-                videoPreviewInput.value = '';
                 videoFileInput.value = '';
                 previewFileInput.value = '';
-                // По умолчанию вкладка "По ссылке"
-                tabLink.classList.add('subscribed');
-                tabFile.classList.remove('subscribed');
-                linkUploadSection.style.display = 'block';
-                fileUploadSection.style.display = 'none';
                 uploadModal.classList.add('active');
             });
 
             closeUploadModal.addEventListener('click', () => uploadModal.classList.remove('active'));
 
-            publishVideoBtn.addEventListener('click', () => {
+            publishVideoBtn.addEventListener('click', async () => {
                 const title = videoTitleInput.value.trim();
                 const desc = videoDescInput.value.trim();
-                if (!title) {
-                    alert('Введите название видео');
+                const videoFile = videoFileInput.files[0];
+                if (!title || !videoFile) {
+                    alert('Введите название и выберите видеофайл');
                     return;
                 }
 
-                // Определяем, какая вкладка активна
-                const isLinkMode = linkUploadSection.style.display !== 'none';
-
-                if (isLinkMode) {
-                    const src = videoSrcInput.value.trim();
-                    if (!src) {
-                        alert('Введите ссылку на видео');
-                        return;
-                    }
-                    const preview = videoPreviewInput.value.trim() || 'https://via.placeholder.com/280x158?text=TapTube';
-                    publishVideo(title, desc, src, preview, 'link');
-                } else {
-                    // Загрузка с компьютера
-                    const videoFile = videoFileInput.files[0];
-                    if (!videoFile) {
-                        alert('Выберите видеофайл');
-                        return;
-                    }
-                    // Создаём Blob URL для видео
-                    const videoBlobUrl = URL.createObjectURL(videoFile);
-                    // Превью (если есть)
-                    let previewUrl = 'https://via.placeholder.com/280x158?text=TapTube';
-                    if (previewFileInput.files[0]) {
-                        previewUrl = URL.createObjectURL(previewFileInput.files[0]);
-                    }
-                    // Длительность (заглушка)
-                    const duration = '?';
-                    publishVideo(title, desc, videoBlobUrl, previewUrl, 'file', duration);
+                // Читаем файл превью
+                let previewUrl = 'https://via.placeholder.com/280x158?text=TapTube';
+                if (previewFileInput.files[0]) {
+                    const previewBlob = previewFileInput.files[0];
+                    previewUrl = URL.createObjectURL(previewBlob);
                 }
-            });
 
-            function publishVideo(title, desc, src, preview, type, duration = '?') {
-                const newId = videos.length ? Math.max(...videos.map(v => v.id)) + 1 : 1;
+                const newId = videosMeta.length ? Math.max(...videosMeta.map(v => v.id)) + 1 : 1;
+                const duration = '?'; // можно вычислить позже, но для простоты заглушка
                 const newVideo = {
                     id: newId,
                     title: title,
@@ -1219,33 +1173,38 @@
                     views: 0,
                     date: new Date().toLocaleDateString('ru-RU'),
                     duration: duration,
-                    src: src,
-                    preview: preview,
+                    preview: previewUrl,
                     description: desc || 'Нет описания',
                     likes: 0,
                     dislikes: 0,
-                    comments: [],
-                    _temp: type === 'file' // пометка, что временное
+                    comments: []
                 };
-                videos.push(newVideo);
-                saveVideos();
+
+                // Сохраняем файл в IndexedDB
+                await saveVideoFile(newId, videoFile);
+
+                videosMeta.push(newVideo);
+                saveVideosMeta();
+
                 const user = users[currentUser.name];
                 user.uploads.push(newId);
                 saveUsers();
+
                 uploadModal.classList.remove('active');
-                alert('Видео опубликовано! ' + (type === 'file' ? 'Оно будет доступно до перезагрузки страницы.' : ''));
+                alert('Видео опубликовано! Оно доступно всем.');
                 showPage('homePage');
                 renderHomeGrid();
-            }
+            });
 
             // Инициализация
+            await openDB();
             renderHomeGrid();
             if (currentUser) {
                 avatarBtn.innerText = currentUser.name[0].toUpperCase();
                 currentUserCommentAvatar.innerText = currentUser.name[0].toUpperCase();
             }
 
-            // Тёмная тема по системным настройкам
+            // Тёмная тема
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.body.classList.add('dark');
             }
